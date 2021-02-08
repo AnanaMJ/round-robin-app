@@ -1,0 +1,9 @@
+secrets/**
+!secrets/.gitkeep
+.env
+
+node_modules/
+
+# OSX
+.DS_Store
+._*

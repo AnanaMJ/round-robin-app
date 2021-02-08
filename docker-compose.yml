@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+  app:
+    build: ./app
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - CLIENT_ID_FILE=/run/secrets/client_id
+      - CLIENT_SECRET_FILE=/run/secrets/client_secret
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - SLACK_SECRET_FILE=/run/secrets/slack_secret
+    ports:
+      - 4390
+    command:
+      - ./entry-point.sh
+    secrets:
+      - client_id
+      - client_secret
+      - postgres_password
+      - slack_secret
+
+postgres:
+  image: postgres:10.1-alpine
+    restart: always
+  environment: 
+    - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+  volumes:
+    - postgres-data:/var/lib/postgresql/data
+  secrets:
+    - postgres_password
+
+secrets:
+  client_id:
+    file: ./secrets/client_id
+  client_secret:
+    file: ./secrets/client_secret
+  postgres_password:
+    file: ./secrets/postgres_password
+  slack_secret:
+    file: ./secrets/slack_secret
